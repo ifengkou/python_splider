@@ -60,7 +60,8 @@ class Tag_Spider:
 
     def splider_all_tags(self,_headers):
         print u'已经启动get_tags....'
-        _x_200 = range(1,200)
+        # 已经爬取 1-200 ，800-900 明天爬
+        _x_200 = range(800,900)
 
         tags = []
         for x in _x_200:
