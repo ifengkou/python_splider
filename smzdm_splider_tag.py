@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#为了系统能正常显示中文
 import sys
 reload(sys)
 sys.setdefaultencoding( "utf-8" )
@@ -6,15 +7,19 @@ sys.setdefaultencoding( "utf-8" )
 import string
 import urllib2
 import json
+# 一个python 爬虫库
 from bs4 import BeautifulSoup
 import httplib
 
+#from 文件名 import 文件里面的类
 from html_tool import HTML_Tool
 from smzdm_mysql import SMZDM_Mysql
 
+#定义类
 class Tag_Spider:
-    #申明相关的属性
+    #申明相关的属性，相当于构造函数
     def __init__(self):
+        #属性类型不需要显示申明
         self.encoding = "utf-8"
         self.homeUrl = 'http://wiki.smzdm.com/youxuan/'
         self.tagUrl = 'http://wiki.smzdm.com/t'
@@ -23,6 +28,7 @@ class Tag_Spider:
 
         self.old_tags = {}
 
+    #定义方法
     def test_print(self):
         print 'hello world'
 
@@ -34,7 +40,7 @@ class Tag_Spider:
     def spider_start(self):
         print u'已经启动Tag 爬虫，咔嚓咔嚓'
         self.db.init_db()
-        self.get_tags_hot()
+        #self.get_tags_hot()
         user_agent = 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36'
         headers = { 'User-Agent' : user_agent }
         try:
@@ -60,7 +66,7 @@ class Tag_Spider:
 
     def splider_all_tags(self,_headers):
         print u'已经启动get_tags....'
-        _x_200 = range(1,200)
+        _x_200 = range(100,200)
 
         tags = []
         for x in _x_200:
@@ -95,8 +101,8 @@ class Tag_Spider:
                 continue
 
             # 按照类别 分批入库
-        #print json.dumps(tags,ensure_ascii=False)
-        self.save_tags(tags)
+        print json.dumps(tags,ensure_ascii=False)
+        #self.save_tags(tags)
 
     def splider_hot_tags(self,_headers):
         print u'已经启动get_tags....'
@@ -126,3 +132,6 @@ class Tag_Spider:
         #print sqlvalues
         self.db.insert_tags(sqlvalues)
         self.db.commit()
+
+mysplider = Tag_Spider()
+mysplider.spider_start()
