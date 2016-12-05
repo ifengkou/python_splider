@@ -45,6 +45,10 @@ class SMZDM_Mysql:
         self.cur.execute('select id,name,uri from category where level=0 and is_show=1')
         return self.cur.fetchall()
 
+    def get_categories(self,level):
+        self.cur.execute('select id,name,uri from category where level=%s and is_show=%s order by id asc limit 17',(level,1))
+        return self.cur.fetchall()
+
     def get_country(self):
         self.cur.execute('select id,name,zh_name,code,code2 as zipcode from country where is_show=1')
         return self.cur.fetchall()
