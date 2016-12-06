@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+#为了系统能正常显示中文
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
 import string
 import urllib2
 import json
@@ -37,3 +41,5 @@ print results
 
 for i in range(2,3):
     print i
+
+print(u'共%s页，%s条记录'%(3,2))
