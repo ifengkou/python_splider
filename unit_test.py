@@ -34,3 +34,6 @@ def init_group(thread_num,cates):
 
 results = init_group(8,range(1,65))
 print results
+
+for i in range(2,3):
+    print i

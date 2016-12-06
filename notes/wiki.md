@@ -5,7 +5,7 @@
     列表要选取 三级列表进行 查询
 
     category_id
-    title tags # 已经爬取 1-200 ，800-900 明天爬
+
 
 
 主商品wiki
@@ -13,6 +13,7 @@
     商品名称/title 描述 品类（字符） 品牌 点赞数 收藏数
     title,description,class_name,brand,thumbs-up,favorites,wiki
 
+    tags
     规格/版本列表 spec list
     images list [一般是4张  url , ismain
 

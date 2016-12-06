@@ -46,7 +46,7 @@ class SMZDM_Mysql:
         return self.cur.fetchall()
 
     def get_categories(self,level):
-        self.cur.execute('select id,name,uri from category where level=%s and is_show=%s order by id asc limit 17',(level,1))
+        self.cur.execute('select id,name,uri from category where level=%s and is_show=%s order by id asc',(level,1))
         return self.cur.fetchall()
 
     def get_country(self):
@@ -62,3 +62,6 @@ class SMZDM_Mysql:
 
     def insert_tags(self,sqlvalues):
         self.cur.executemany('insert into tag(name,hot_tag,hot) values(%s,%s,%s)',sqlvalues)
+
+    def insert_wiki_urls(self,sqlvalues):
+        self.cur.executemany('insert into wiki_url(cate,cate_uri,url) values(%s,%s,%s)',sqlvalues)

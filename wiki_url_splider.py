@@ -26,6 +26,10 @@ class Wiki_Splider:
         self.myTool = HTML_Tool()
         self.categories = []
         self.thread_num = 8
+
+        self.page_item_size = 20
+        self.wiki_items =[]
+
     def prepare_categories(self):
         _categories = self.db.get_categories(2)
         for category in _categories:
@@ -40,10 +44,8 @@ class Wiki_Splider:
             #send HTTP/1.0 request , adding this , fix the problem
             httplib.HTTPConnection._http_vsn = 10
             httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
-            # 处理热门标签
-            #self.splider_hot_tags(headers)
 
-            # 处理一般标签，轮询url
+            # 商品wiki 列表处理
             self.splide_wiki()
 
             #after | back to http 1.1
@@ -58,9 +60,6 @@ class Wiki_Splider:
         print u'Wiki 爬虫服务运行结束.....'
 
     def splide_wiki(self):
-        user_agent = 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36'
-        headers = { 'User-Agent' : user_agent }
-
         # 1. 将categories分为 thread_num 组
         data = self.init_group(self.thread_num,self.categories)
         pool = threadpool.ThreadPool(self.thread_num)
@@ -69,12 +68,59 @@ class Wiki_Splider:
         pool.wait()
 
     def splide_wikiurl_by_cates(self,cates):
-        urls = []
+        user_agent = 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36'
+        headers = { 'User-Agent' : user_agent }
+        page_urls = []
         for cate in cates:
             current_cate_uri = cate[2]
+            current_cate_id = cate[0]
             page_url = self.homeUrl+current_cate_uri+'/you'
-            urls.append(page_url)
-        time.sleep(2)
+            # 加载页面
+            req = urllib2.Request(page_url, headers = headers)
+            myPage = urllib2.urlopen(req).read().decode(self.encoding)
+            soup = BeautifulSoup(myPage,'lxml')
+
+            # 计算分页数
+            item_num = 0
+            dom_item_numb_div = soup.select('div[class*="right_wrap"] > div[class*="right_top_title"] > div[class="total_pro"]')
+            if dom_item_numb_div:
+                item_numb_text = dom_item_numb_div[0].get_text()
+                #print item_numb_text
+                item_num = int(item_numb_text.replace('共','').replace('条优选产品',''))
+
+            if not item_num:
+                continue
+
+            page_numb = (item_num  +  self.page_item_size  - 1) / self.page_item_size
+            print u'共%s 条商品记录，总页数%s',item_num,page_numb
+
+            # 当前页 也就是第一页
+            page_urls.extend(self.splide_wiki_list_item_url(soup))
+            # 后面的页
+            for i in range(2,page_numb+1):
+                print u'开始处理第%s页'%i
+                other_page_url = page_url +'/p' + str(i)
+                other_req = urllib2.Request(other_page_url, headers = headers)
+                other_page = urllib2.urlopen(other_req).read().decode(self.encoding)
+                other_soup = BeautifulSoup(other_page,'lxml')
+                page_urls.extend(self.splide_wiki_list_item_url(other_soup))
+
+        wiki_items = []
+        for item in page_urls:
+            wiki_u = {}
+            wiki_u['url'] = item
+            wiki_u['cate'] = current_cate_id
+            wiki_u['cate_uri'] = current_cate_uri
+            wiki_items.append(wiki_u)
+
+        return wiki_items
+
+    def splide_wiki_list_item_url(self,soup):
+        dom_wiki_list_a = soup.select('div[class*="right_wrap"] > div[class*="zk_new"] > a[class="pic_box"]')
+        # 采集 url
+        urls = []
+        for a in dom_wiki_list_a:
+            urls.append(a['href'])
         return urls
 
     def init_group(self,thread_num,cates):
@@ -91,8 +137,18 @@ class Wiki_Splider:
             index = next_index
         return result
 
-    def insert_db(self,request,wiki_urls):
-        print json.dumps(wiki_urls,ensure_ascii=False)
+    def insert_db(self,request,wiki_items):
+        print json.dumps(wiki_items,ensure_ascii=False)
+        if not wiki_items:
+            return ''
+        sqlvalues = []
+        for bean in wiki_items:
+            sqlvalues.append((bean['cate'],bean['cate_uri'],bean['url']))
+
+        # 批量插入 商城
+        #print sqlvalues
+        self.db.insert_wiki_urls(sqlvalues)
+        self.db.commit()
 
 w_splider = Wiki_Splider()
 w_splider.spider_start()
