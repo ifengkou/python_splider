@@ -20,7 +20,6 @@ path.append(r'H:\code\python')
 #
 # m_spider = Mall_Spider()
 # m_spider.test_print()
-
 def init_group(thread_num,cates):
     cates_num = len(cates)
     piece_num = cates_num/thread_num
@@ -43,3 +42,7 @@ for i in range(2,3):
     print i
 
 print(u'共%s页，%s条记录'%(3,2))
+
+_text = 'sdfsdfsdf___1(sdf)'
+_pos = _text.find('(')
+print _text[:_pos]

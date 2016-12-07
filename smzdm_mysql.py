@@ -48,6 +48,9 @@ class SMZDM_Mysql:
     def insert_category(self,category):
         self.cur.execute('insert into category(name,parent_id,level,uri) values(%s,%s,%s,%s)',[category['name'],category['parent_id'],category['level'],category['uri']])
 
+    def insert_categories(self,sqlvalues):
+        self.cur.executemany('insert into category(name,parent_id,level,uri) values(%s,%s,%s,%s)',sqlvalues)
+
     def get_big_categories(self):
         self.cur.execute('select id,name,uri from category where level=0 and is_show=1')
         return self.cur.fetchall()
