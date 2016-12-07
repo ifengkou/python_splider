@@ -24,6 +24,14 @@
 	python
 	import MySQLdb
 
+**OperationalError: (2006, 'MySQL server has gone away')**
+异常：开启多线程执行爬虫，爬虫怕完一个主题就进行插入一次，插入可能相当频繁
+
+网上很多方案，无外乎 调大
+
+可能并不适用我这种情况，一个连接，多线程频繁插入，所以就想用连接池试试
+
+		pip install DBUtils
 
 ## python  bs4 包
 

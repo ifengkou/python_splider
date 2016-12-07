@@ -24,8 +24,8 @@ class Smzdm_Spider:
 
         # 启动 tag 爬虫
         t_spider = Tag_Spider()
-        #t_spider.test_print()
-        t_spider.spider_start()
+        t_spider.test_print()
+        #t_spider.spider_start()
 
 # ---------- 程序入口 --------------
 print """#----------------------------
