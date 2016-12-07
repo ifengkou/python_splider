@@ -7,12 +7,19 @@ class SMZDM_Mysql:
     def init_db(self):
         print u'数据库连接初始化.....'
         self.conn= MySQLdb.connect(
-                host='192.168.0.118',
+                host='localhost',
                 port = 3306,
                 user='root',
                 passwd='root'
                 )
-        self.conn.select_db('ark1')
+        self.conn.select_db('u_wiki')
+        # self.conn= MySQLdb.connect(
+        #         host='192.168.0.118',
+        #         port = 3306,
+        #         user='root',
+        #         passwd='root'
+        #         )
+        # self.conn.select_db('ark1')
         self.conn.set_character_set('utf8')
         self.cur = self.conn.cursor()
         self.cur.execute("SET NAMES utf8;")

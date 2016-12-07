@@ -25,7 +25,7 @@ class Wiki_Splider:
         self.db = SMZDM_Mysql()
         self.myTool = HTML_Tool()
         self.categories = []
-        self.thread_num = 4
+        self.thread_num = 10
 
         self.page_item_size = 20
         self.wiki_items =[]
@@ -42,6 +42,7 @@ class Wiki_Splider:
         print u'已经启动Wiki 爬虫，咔嚓咔嚓'
         self.db.init_db()
         self.prepare_categories()
+        self.db.close_db()
         print u'共处理category数：'+str(len(self.categories))
         try:
             #send HTTP/1.0 request , adding this , fix the problem
@@ -55,11 +56,10 @@ class Wiki_Splider:
             httplib.HTTPConnection._http_vsn = 11
             httplib.HTTPConnection._http_vsn_str = 'HTTP/1.1'
         except Exception, e:
-            self.db.close_db()
             print Exception,":",e
             return ''
 
-        self.db.close_db()
+        #self.db.close_db()
         print u'Wiki 爬虫服务运行结束.....'
 
     def splide_wiki(self):
@@ -74,6 +74,9 @@ class Wiki_Splider:
     def splide_wikiurl_by_cates(self,cates):
         user_agent = 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36'
         headers = { 'User-Agent' : user_agent }
+        #一个线程一个db
+        thread_db = SMZDM_Mysql()
+        thread_db.init_db()
         #wiki_results = []
         for cate in cates:
             current_cate_uri = cate[2]
@@ -126,9 +129,9 @@ class Wiki_Splider:
                 wiki_items.append(wiki_u)
 
             print(u'%s,开始入库,共计%s条记录'%(current_cate_uri,len(wiki_items)))
-            self.insert_db({},wiki_items)
+            self.insert_db_2(wiki_items,thread_db)
             #wiki_results.extend(wiki_items)
-
+        thread_db.close_db()
         #return wiki_results
 
     def splide_wiki_list_item_url(self,soup):
@@ -165,6 +168,19 @@ class Wiki_Splider:
         #print sqlvalues
         self.db.insert_wiki_urls(sqlvalues)
         self.db.commit()
+
+    def insert_db_2(self,wiki_results,db):
+        #print json.dumps(wiki_items,ensure_ascii=False)
+        if not wiki_results:
+            return ''
+        sqlvalues = []
+        for bean in wiki_results:
+            sqlvalues.append((bean['cate'],bean['cate_uri'],bean['url']))
+
+        # 批量插入 商城
+        #print sqlvalues
+        db.insert_wiki_urls(sqlvalues)
+        db.commit()
 
 w_splider = Wiki_Splider()
 w_splider.spider_start()
