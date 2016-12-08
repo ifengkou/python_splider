@@ -75,3 +75,7 @@ class SMZDM_Mysql:
 
     def insert_wiki_urls(self,sqlvalues):
         self.cur.executemany('insert into wiki_url(cate,cate_uri,url) values(%s,%s,%s)',sqlvalues)
+
+    def get_wiki_urls(self):
+        self.cur.execute('select id,cate,cate_uri,url from wiki_url')
+        return self.cur.fetchall()
