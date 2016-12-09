@@ -1,4 +1,13 @@
 
+爆料 技术架构
+
+爆料 用es 主要考虑搜索能力，但是爆料中有 点赞 和 点不值  ，评论数 之类的
+
+mongodb 可以取代
+
+https://my.oschina.net/liuyuantao/blog/746202
+http://blog.csdn.net/laoyang360/article/details/51842822
+http://www.yiibai.com/mongodb/mongodb_quick_guide.html
 
 优选商品列表 http://wiki.smzdm.com/diannaoshuma/you/
 

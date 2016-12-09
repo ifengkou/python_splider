@@ -6,6 +6,8 @@
     # Lists the files in your .ssh directory, if they exist
     # gen key
     ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+	# Copies the contents of the id_rsa.pub file to your clipboard 
+	clip < ~/.ssh/id_rsa.pub
 
 # Github 多ssh key导致的权限问题 ：Permission denied (publickey) #
 

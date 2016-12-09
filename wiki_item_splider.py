@@ -99,7 +99,7 @@ class Item_Splider:
             comment ={}
 
             # 历史爆料 /价格
-            #商城 日期 标题 价格 点赞数 点踩数 评论数（火热程度） 购买链接 点击链接
+            #id 商城 关联商品id 日期 标题 价格 点赞数 点踩数 评论数（火热程度） 购买链接 点击链接
 
 
     def init_group(self,thread_num,urls):
