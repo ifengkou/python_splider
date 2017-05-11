@@ -4,6 +4,10 @@
 
 安装 setuptools
 
+打开 https://bootstrap.pypa.io/ez_setup.py
+
+直接保存到本地，然后执行
+
 	python ez_setup.py
 
 
