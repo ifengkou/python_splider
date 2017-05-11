@@ -1,5 +1,7 @@
 #IDE
 .idea/
+.setting/
+target/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
